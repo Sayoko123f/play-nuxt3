@@ -11,6 +11,9 @@
         <li>
           <NuxtLink class="hover:text-sky-400" to="/register">註冊</NuxtLink>
         </li>
+        <li>
+          <NuxtLink class="hover:text-sky-400" to="/user">個人資料</NuxtLink>
+        </li>
       </ul>
     </nav>
   </header>

@@ -6,9 +6,10 @@ export default defineEventHandler(async (event) => {
     const usersData = await User.find();
     return usersData.map((user) => ({
       id: user._id,
+      email: user.email,
       username: user.username,
       password: user.password,
-      tokens: user.tokens,
+      tokens: user.tokens.length,
     }));
   } catch (err) {
     throw createError({

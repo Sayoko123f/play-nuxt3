@@ -1,23 +1,9 @@
 import mongoose from "mongoose";
 import * as jwtDefault from "jsonwebtoken";
 import * as bcryptDefault from "bcryptjs";
+import type { IUser, UserModel, IUserMethods } from "types";
 const jwt = (jwtDefault as any).default as typeof jwtDefault;
 const bcrypt = (bcryptDefault as any).default as typeof bcryptDefault;
-
-interface IUser {
-  email: string;
-  password: string;
-  username: string;
-  tokens: { token: string }[];
-}
-
-interface IUserMethods {
-  generateAuthToken(this: IUser & mongoose.Document<IUser>): Promise<string>;
-}
-
-interface UserModel extends mongoose.Model<IUser, {}, IUserMethods> {
-  findByCredentials(): Promise<mongoose.HydratedDocument<IUser, IUserMethods>>;
-}
 
 const schema = new mongoose.Schema<IUser, UserModel, IUserMethods>(
   {

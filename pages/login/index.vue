@@ -4,12 +4,22 @@
   >
     <div class="text-xl font-bold">登入</div>
     <div class="">
-      <label class="mr-3" for="username">帳號</label>
-      <input id="username" class="form-input rounded" type="text" />
+      <label class="mr-3" for="email">信箱</label>
+      <input
+        v-model="data.email"
+        id="email"
+        class="form-input rounded"
+        type="text"
+      />
     </div>
     <div class="">
       <label class="mr-3" for="password">密碼</label>
-      <input id="password" class="form-input rounded" type="password" />
+      <input
+        v-model="data.password"
+        id="password"
+        class="form-input rounded"
+        type="password"
+      />
     </div>
     <div class="flex justify-center gap-4">
       <NuxtLink
@@ -20,6 +30,7 @@
       </NuxtLink>
       <button
         class="font-bold rounded hover:bg-amber-400 px-6 py-2 bg-amber-500 text-white"
+        @click="onLoginClick"
       >
         登入
       </button>
@@ -27,7 +38,17 @@
   </div>
 </template>
 <script setup lang="ts">
-const data = reactive({});
+import { useUserStore } from "@/stores/user";
+const data = reactive({
+  email: "",
+  password: "",
+});
 
-function onLoginClick() {}
+async function onLoginClick() {
+  if (!data.email || !data.password) {
+    return;
+  }
+  await useUserStore().login({ email: data.email, password: data.password });
+  navigateTo("/user");
+}
 </script>
