@@ -23,9 +23,12 @@ export default defineEventHandler(async (event) => {
         password,
         username,
       });
+      //@ts-ignore
+      const token = await newUserData.generateAuthToken();
       return {
         id: newUserData._id,
         username: newUserData.username,
+        token,
       };
     }
   } catch (err) {

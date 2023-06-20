@@ -8,6 +8,7 @@ export default defineEventHandler(async (event) => {
       id: user._id,
       username: user.username,
       password: user.password,
+      tokens: user.tokens,
     }));
   } catch (err) {
     throw createError({

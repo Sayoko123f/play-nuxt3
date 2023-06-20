@@ -1,11 +1,14 @@
 import mongoose from "mongoose";
+import * as jwtDefault from "jsonwebtoken";
 import * as bcryptDefault from "bcryptjs";
+const jwt = (jwtDefault as any).default as typeof jwtDefault;
 const bcrypt = (bcryptDefault as any).default as typeof bcryptDefault;
 const schema = new mongoose.Schema(
   {
-    email: { type: String, unique: true },
+    email: { type: String, required: true, unique: true },
     password: String,
-    username: String,
+    username: { type: String, required: true },
+    tokens: [{ token: { type: String, required: true } }],
   },
   { timestamps: true, strict: true, strictQuery: true }
 );
@@ -17,5 +20,14 @@ schema.pre("save", async function (next) {
   }
   next();
 });
+
+schema.methods.generateAuthToken = async function () {
+  const user = this;
+  const token = jwt.sign({ _id: user._id }, "secret");
+  console.log(token);
+  user.tokens = user.tokens.concat({ token });
+  await user.save();
+  return token;
+};
 
 export const users = mongoose.model("User", schema, "user");
