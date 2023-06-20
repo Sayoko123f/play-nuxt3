@@ -11,4 +11,10 @@ export default defineNuxtConfig({
   typescript: {
     strict: true,
   },
+  runtimeConfig: {
+    mongoUrl: "mongodb://192.168.12.41:25017/test",
+  },
+  nitro: {
+    plugins: ["~/server/install-mongo.ts"],
+  },
 });
