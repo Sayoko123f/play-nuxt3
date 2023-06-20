@@ -6,16 +6,18 @@ const bcrypt = (bcryptDefault as any).default as typeof bcryptDefault;
 
 interface IUser {
   email: string;
-  password?: string;
+  password: string;
   username: string;
   tokens: { token: string }[];
 }
 
 interface IUserMethods {
-  generateAuthToken(): Promise<string>;
+  generateAuthToken(this: IUser & mongoose.Document<IUser>): Promise<string>;
 }
 
-type UserModel = mongoose.Model<IUser, {}, IUserMethods>;
+interface UserModel extends mongoose.Model<IUser, {}, IUserMethods> {
+  findByCredentials(): Promise<mongoose.HydratedDocument<IUser, IUserMethods>>;
+}
 
 const schema = new mongoose.Schema<IUser, UserModel, IUserMethods>(
   {
@@ -35,6 +37,18 @@ schema.pre("save", async function (next) {
   next();
 });
 
+schema.static("findByCredentials", async (email, password) => {
+  const user = await User.findOne({ email });
+  if (!user) {
+    throw new Error("401");
+  }
+  const validPassword = await bcrypt.compare(password, user.password);
+  if (!validPassword) {
+    throw new Error("401");
+  }
+  return user;
+});
+
 schema.methods.generateAuthToken = async function () {
   const user = this;
   const token = jwt.sign({ _id: user._id }, "secret");
@@ -43,5 +57,4 @@ schema.methods.generateAuthToken = async function () {
   await user.save();
   return token;
 };
-
-export const User = mongoose.model("User", schema, "user");
+export const User = mongoose.model<IUser, UserModel>("User", schema, "user");
