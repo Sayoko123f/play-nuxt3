@@ -17,4 +17,5 @@ export default defineNuxtConfig({
   nitro: {
     plugins: ["~/server/install-mongo.ts"],
   },
+  modules: ["@pinia/nuxt"],
 });
