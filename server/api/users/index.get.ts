@@ -7,6 +7,7 @@ export default defineEventHandler(async (event) => {
     return usersData.map((user) => ({
       id: user._id,
       username: user.username,
+      password: user.password,
     }));
   } catch (err) {
     throw createError({
