@@ -1,4 +1,4 @@
-import { users } from "../../models";
+import { User } from "../../models";
 interface IRequestBody {
   email: string;
   password: string;
@@ -8,7 +8,7 @@ export default defineEventHandler(async (event) => {
   console.log("POST /api/users");
   const { email, password, username } = await readBody<IRequestBody>(event);
   try {
-    const userData = await users.findOne({
+    const userData = await User.findOne({
       email,
     });
     if (userData) {
@@ -18,12 +18,11 @@ export default defineEventHandler(async (event) => {
       });
     } else {
       console.log("Create user");
-      const newUserData = await users.create({
+      const newUserData = await User.create({
         email,
         password,
         username,
       });
-      //@ts-ignore
       const token = await newUserData.generateAuthToken();
       return {
         id: newUserData._id,

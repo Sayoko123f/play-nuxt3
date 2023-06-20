@@ -3,7 +3,21 @@ import * as jwtDefault from "jsonwebtoken";
 import * as bcryptDefault from "bcryptjs";
 const jwt = (jwtDefault as any).default as typeof jwtDefault;
 const bcrypt = (bcryptDefault as any).default as typeof bcryptDefault;
-const schema = new mongoose.Schema(
+
+interface IUser {
+  email: string;
+  password?: string;
+  username: string;
+  tokens: { token: string }[];
+}
+
+interface IUserMethods {
+  generateAuthToken(): Promise<string>;
+}
+
+type UserModel = mongoose.Model<IUser, {}, IUserMethods>;
+
+const schema = new mongoose.Schema<IUser, UserModel, IUserMethods>(
   {
     email: { type: String, required: true, unique: true },
     password: String,
@@ -30,4 +44,4 @@ schema.methods.generateAuthToken = async function () {
   return token;
 };
 
-export const users = mongoose.model("User", schema, "user");
+export const User = mongoose.model("User", schema, "user");

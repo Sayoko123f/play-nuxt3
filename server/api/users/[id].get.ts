@@ -1,4 +1,4 @@
-import { users } from "../../models";
+import { User } from "../../models";
 export default defineEventHandler(async (event) => {
   const userId = event?.context?.params?.id;
   if (!userId) {
@@ -10,7 +10,7 @@ export default defineEventHandler(async (event) => {
   console.log(`GET /api/users/${userId}`);
   try {
     console.log("Find user");
-    const userData = await users.findOne({
+    const userData = await User.findOne({
       _id: userId,
     });
     if (userData) {
